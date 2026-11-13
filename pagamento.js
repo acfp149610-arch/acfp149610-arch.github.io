@@ -1,3 +1,4 @@
+alert("PAGAMENTO.JS FOI CARREGADO!");
 // =====================================
 // CONEXÃO COM GOOGLE APPS SCRIPT
 // =====================================
