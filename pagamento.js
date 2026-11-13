@@ -3,7 +3,7 @@
 // CONEXÃO COM GOOGLE APPS SCRIPT
 // =====================================
 
-const GOOGLE_SCRIPT_URL ="https://script.google.com/macros/s/AKfycbxcS18Voj0Ie7hdheOKN_SJWtvw-lELgnX0tWxVgyHGRn42QLJs1lpm3r8_FTiWQQR9fg/exec";
+const GOOGLE_SCRIPT_URL ="https://script.google.com/macros/s/AKfycbzC-mpufygtNmV9SMjAsFq5AZGYk2pocWQi_FCUxZeFt3p0lgbRFh-v3W_YsBMZXQnEMw/exec";
 
 // =====================================
 // CONFIGURAÇÕES DO PIX
