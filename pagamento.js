@@ -126,42 +126,48 @@ document.getElementById("copiar").addEventListener("click", async () => {
 });
 
 
-// ENVIAR DADOS PARA O GOOGLE PLANILHAS
+function enviarCadastro() {
 
-async function enviarCadastro() {
+    const URL_SCRIPT = GOOGLE_SCRIPT_URL;
 
-    const dados = {
+    const iframe = document.createElement("iframe");
+    iframe.name = "envioSheets";
+    iframe.style.display = "none";
+
+    document.body.appendChild(iframe);
+
+    const formulario = document.createElement("form");
+
+    formulario.method = "POST";
+    formulario.action = URL_SCRIPT;
+    formulario.target = "envioSheets";
+    formulario.style.display = "none";
+
+    const campos = {
         nome: cliente.nome,
         email: cliente.email,
         telefone: cliente.telefone,
         cpf: cliente.cpf,
         curso: cliente.curso,
-        valor: valor.toFixed(2)
+        valor: Number(valor).toFixed(2)
     };
 
-    try {
+    for (const campo in campos) {
 
-        console.log("Enviando cadastro:", dados);
+        const input = document.createElement("input");
 
-        await fetch(GOOGLE_SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify(dados)
-        });
+        input.type = "hidden";
+        input.name = campo;
+        input.value = campos[campo] || "";
 
-        console.log("Solicitação enviada ao Google Apps Script.");
-
-    } catch (erro) {
-
-        console.error("Erro ao enviar cadastro:", erro);
-
-        document.getElementById("mensagem").textContent =
-            "Erro ao enviar cadastro. Tente novamente.";
-
+        formulario.appendChild(input);
     }
+
+    document.body.appendChild(formulario);
+
+    formulario.submit();
+
+    console.log("Dados enviados ao Google Sheets.");
 }
 
 enviarCadastro();
