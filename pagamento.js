@@ -1,5 +1,4 @@
-const GOOGLE_SCRIPT_URL ="https://script.google.com/macros/s/AKfycbydQTq9esquZeJ1cTuhTHFkSdpzRS8zYqdmEkVD-ejc3AMKAV3wHA0QeZiGRp2M-r_i/exec";
-
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydQTq9esquZeJ1cTuhTHFkSdpzRS8zYqdmEkVD-ejc3AMKAV3wHA0QeZiGRp2M-r_i/exec";
 // CONFIGURAÇÕES DO PIX
 const CHAVE_PIX = "03016158299";
 const NOME_RECEBEDOR = "ANA CLARA FREITAS PAULINO";
