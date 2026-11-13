@@ -260,7 +260,7 @@ async function enviarCadastro() {
         });
 
         status.textContent =
-            "Solicitação enviada. Aguarde a conferência da contratação.";
+    "✓ Enviado com sucesso! Seus dados e comprovante foram encaminhados para análise. Aguarde a confirmação da contratação.";
 
         botao.textContent = "ENVIO SOLICITADO";
 
