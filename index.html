@@ -6,6 +6,13 @@
     <title>Matemática com Zé Vitor</title>
     <link rel="stylesheet" href="style.css">
 </head>
+    <script>
+function abrirCurso(numero) {
+    window.location.replace(
+        "https://acfp149610-arch.github.io/dados.html?curso=" + numero
+    );
+}
+    </script>
 <body>
     <header>
         <h2>MATEMÁTICA COM ZÉ VITOR</h2>
@@ -39,17 +46,16 @@ Seja para reforçar os conhecimentos, se preparar para provas ou alcançar melho
         <h4 class="curso1">Curso 1</h4>
         <p class="curso11">Texto sobre o curso 1</p>
 
-        <button type="button" onclick="window.location.href='./dados.html?curso=1'">
+        <button type="button" onclick="abrirCurso(1)">
     CONTRATAR
         </button>
-    
     </div>
 
     <div class="cursodois">
         <h4 class="curso2">Curso 2</h4>
         <p class="curso21">Texto sobre o curso 2</p>
 
-        <button type="button" onclick="window.location.href='./dados.html?curso=2'">
+        <button type="button" onclick="abrirCurso(2)">
     CONTRATAR
         </button>
     </div>
