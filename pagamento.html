@@ -51,7 +51,22 @@
         <p id="statusEnvio"></p>
 
     </main>
+    <script>
+    console.log("HTML carregado");
 
-    <script src="pagamento.js"></script>
+    const script = document.createElement("script");
+
+    script.src = "./pagamento.js?v=" + Date.now();
+
+    script.onload = function () {
+        console.log("Pagamento.js carregado com sucesso!");
+    };
+
+    script.onerror = function () {
+        alert("Erro ao carregar pagamento.js");
+    };
+
+    document.body.appendChild(script);
+    </script>
 </body>
 </html>
