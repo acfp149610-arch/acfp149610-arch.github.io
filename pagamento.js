@@ -1,8 +1,22 @@
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydQTq9esquZeJ1cTuhTHFkSdpzRS8zYqdmEkVD-ejc3AMKAV3wHA0QeZiGRp2M-r_i/exec";
+// =====================================
+// CONEXÃO COM GOOGLE APPS SCRIPT
+// =====================================
+
+const GOOGLE_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbzz6UUZky_lVz-DVVI2J3HWs6E08GxCQQLmvxv4mnrj3M3FXd6-mG6wvIQSdQK8mwmVyQ/exec";
+
+// =====================================
 // CONFIGURAÇÕES DO PIX
+// =====================================
+
+// Mantenha aqui os mesmos dados PIX do seu código anterior.
 const CHAVE_PIX = "03016158299";
 const NOME_RECEBEDOR = "ANA CLARA FREITAS PAULINO";
 const CIDADE = "MONTES CLAROS";
+
+// =====================================
+// DADOS DO CLIENTE
+// =====================================
 
 const cliente = JSON.parse(
     localStorage.getItem("dadosCliente")
@@ -13,13 +27,25 @@ if (!cliente) {
     window.location.href = "index.html";
 }
 
-// Valores provisórios
+// =====================================
+// VALORES DOS CURSOS
+// =====================================
+
 const valores = {
     "Curso 1": 1.00,
     "Curso 2": 1.00
 };
 
 const valor = valores[cliente.curso];
+
+if (!valor) {
+    alert("Curso inválido!");
+    window.location.href = "index.html";
+}
+
+// =====================================
+// MOSTRAR RESUMO
+// =====================================
 
 document.getElementById("nome").textContent =
     "Aluno: " + cliente.nome;
@@ -30,16 +56,20 @@ document.getElementById("curso").textContent =
 document.getElementById("valor").textContent =
     "R$ " + valor.toFixed(2).replace(".", ",");
 
+// =====================================
+// CAMPOS PIX
+// =====================================
 
-// FUNÇÃO PARA CRIAR CAMPOS PIX
 function campo(id, valor) {
     return id +
         String(valor.length).padStart(2, "0") +
         valor;
 }
 
-
+// =====================================
 // CRC16
+// =====================================
+
 function calcularCRC(texto) {
 
     let crc = 0xFFFF;
@@ -65,8 +95,10 @@ function calcularCRC(texto) {
         .padStart(4, "0");
 }
 
-
+// =====================================
 // GERAR PIX
+// =====================================
+
 function gerarPix() {
 
     const chave = campo("01", CHAVE_PIX);
@@ -101,72 +133,156 @@ function gerarPix() {
     return pix;
 }
 
-
 const codigo = gerarPix();
 
 document.getElementById("codigoPix").value = codigo;
 
+// =====================================
+// QR CODE
+// =====================================
 
-// GERAR QR CODE
 new QRCode(document.getElementById("qrcode"), {
     text: codigo,
     width: 220,
     height: 220
 });
 
-
+// =====================================
 // COPIAR PIX
-document.getElementById("copiar").addEventListener("click", async () => {
+// =====================================
 
-    await navigator.clipboard.writeText(codigo);
+document.getElementById("copiar").addEventListener(
+    "click",
+    async () => {
 
-    document.getElementById("mensagem").textContent =
-        "Código PIX copiado!";
-});
+        try {
+            await navigator.clipboard.writeText(codigo);
 
-
-function enviarCadastro() {
-
-    const URL_SCRIPT = GOOGLE_SCRIPT_URL;
-
-    const iframe = document.createElement("iframe");
-    iframe.name = "envioSheets";
-    iframe.style.display = "none";
-
-    document.body.appendChild(iframe);
-
-    const formulario = document.createElement("form");
-
-    formulario.method = "POST";
-    formulario.action = URL_SCRIPT;
-    formulario.target = "envioSheets";
-    formulario.style.display = "none";
-
-    const campos = {
-        nome: cliente.nome,
-        email: cliente.email,
-        telefone: cliente.telefone,
-        cpf: cliente.cpf,
-        curso: cliente.curso,
-        valor: Number(valor).toFixed(2)
-    };
-
-    for (const campo in campos) {
-
-        const input = document.createElement("input");
-
-        input.type = "hidden";
-        input.name = campo;
-        input.value = campos[campo] || "";
-
-        formulario.appendChild(input);
+            document.getElementById("mensagem").textContent =
+                "Código PIX copiado!";
+        } catch (erro) {
+            document.getElementById("mensagem").textContent =
+                "Não foi possível copiar. Selecione o código manualmente.";
+        }
     }
+);
 
-    document.body.appendChild(formulario);
+// =====================================
+// CONVERTER COMPROVANTE EM BASE64
+// =====================================
 
-    formulario.submit();
+function arquivoBase64(arquivo) {
 
-    console.log("Dados enviados ao Google Sheets.");
+    return new Promise((resolve, reject) => {
+
+        const leitor = new FileReader();
+
+        leitor.onload = () => {
+
+            const resultado = leitor.result;
+
+            const base64 = resultado.split(",")[1];
+
+            resolve(base64);
+        };
+
+        leitor.onerror = () => {
+            reject(new Error("Erro ao ler o comprovante."));
+        };
+
+        leitor.readAsDataURL(arquivo);
+    });
 }
 
-enviarCadastro();
+// =====================================
+// ENVIAR CONTRATAÇÃO
+// =====================================
+
+async function enviarCadastro() {
+
+    const botao = document.getElementById("finalizar");
+    const status = document.getElementById("statusEnvio");
+    const campoComprovante = document.getElementById("comprovante");
+
+    const arquivo = campoComprovante.files[0];
+
+    if (!arquivo) {
+        status.textContent = "Anexe seu comprovante PIX.";
+        return;
+    }
+
+    if (arquivo.size > 5 * 1024 * 1024) {
+        status.textContent =
+            "O comprovante deve ter no máximo 5 MB.";
+        return;
+    }
+
+    botao.disabled = true;
+    botao.textContent = "ENVIANDO...";
+
+    status.textContent = "Preparando contratação...";
+
+    try {
+
+        const base64 = await arquivoBase64(arquivo);
+
+        const dados = {
+
+            nome: cliente.nome,
+            email: cliente.email,
+            telefone: cliente.telefone,
+            cpf: cliente.cpf,
+
+            curso: cliente.curso,
+            valor: valor.toFixed(2),
+
+            comprovante: {
+                nome: arquivo.name,
+                tipo: arquivo.type || "application/octet-stream",
+                base64: base64
+            }
+        };
+
+        status.textContent = "Enviando contratação...";
+
+        await fetch(GOOGLE_SCRIPT_URL, {
+
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify(dados)
+
+        });
+
+        status.textContent =
+            "Solicitação enviada. Aguarde a conferência da contratação.";
+
+        botao.textContent = "ENVIO SOLICITADO";
+
+        localStorage.removeItem("dadosCliente");
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        status.textContent =
+            "Não foi possível enviar. Verifique sua conexão e tente novamente.";
+
+        botao.disabled = false;
+        botao.textContent = "FINALIZAR CONTRATAÇÃO";
+    }
+}
+
+// =====================================
+// BOTÃO FINALIZAR
+// =====================================
+
+document.getElementById("finalizar").addEventListener(
+    "click",
+    enviarCadastro
+);
