@@ -13,7 +13,31 @@ const client = window.supabase.createClient(
         }
     }
 );
+async function verificarSessao() {
+    const { data, error } = await client.auth.getSession();
 
+    if (error || !data.session) {
+        return;
+    }
+
+    const { data: admin, error: erroAdmin } = await client
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", data.session.user.id)
+        .maybeSingle();
+
+    if (erroAdmin || !admin) {
+        await client.auth.signOut();
+        return;
+    }
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("painel").style.display = "block";
+
+    carregarContratacoes();
+}
+
+document.addEventListener("DOMContentLoaded", verificarSessao);
 async function entrar() {
     const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value;
