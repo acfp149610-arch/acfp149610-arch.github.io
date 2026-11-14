@@ -1,15 +1,17 @@
-
 // =====================================
-// CONEXÃO COM GOOGLE APPS SCRIPT
+// CONEXÃO COM SUPABASE
 // =====================================
 
-const GOOGLE_SCRIPT_URL ="https://script.google.com/macros/s/AKfycbzC-mpufygtNmV9SMjAsFq5AZGYk2pocWQi_FCUxZeFt3p0lgbRFh-v3W_YsBMZXQnEMw/exec";
+const SUPABASE_URL = "https://kghzycpuvlidoenqnhhb.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_IntMzNdV-nhtxW8czMBijA_4yVRgbIp";
+
+let supabase;
 
 // =====================================
 // CONFIGURAÇÕES DO PIX
 // =====================================
 
-// Mantenha aqui os mesmos dados PIX do seu código anterior.
 const CHAVE_PIX = "03016158299";
 const NOME_RECEBEDOR = "ANA CLARA FREITAS PAULINO";
 const CIDADE = "MONTES CLAROS";
@@ -71,15 +73,12 @@ function campo(id, valor) {
 // =====================================
 
 function calcularCRC(texto) {
-
     let crc = 0xFFFF;
 
     for (let i = 0; i < texto.length; i++) {
-
         crc ^= texto.charCodeAt(i) << 8;
 
         for (let j = 0; j < 8; j++) {
-
             if (crc & 0x8000) {
                 crc = (crc << 1) ^ 0x1021;
             } else {
@@ -100,7 +99,6 @@ function calcularCRC(texto) {
 // =====================================
 
 function gerarPix() {
-
     const chave = campo("01", CHAVE_PIX);
 
     const merchantAccount =
@@ -154,7 +152,6 @@ new QRCode(document.getElementById("qrcode"), {
 document.getElementById("copiar").addEventListener(
     "click",
     async () => {
-
         try {
             await navigator.clipboard.writeText(codigo);
 
@@ -168,30 +165,20 @@ document.getElementById("copiar").addEventListener(
 );
 
 // =====================================
-// CONVERTER COMPROVANTE EM BASE64
+// CONECTAR AO SUPABASE
 // =====================================
 
-function arquivoBase64(arquivo) {
+async function conectarSupabase() {
+    const { createClient } = await import(
+        "https://esm.sh/@supabase/supabase-js@2"
+    );
 
-    return new Promise((resolve, reject) => {
+    supabase = createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
-        const leitor = new FileReader();
-
-        leitor.onload = () => {
-
-            const resultado = leitor.result;
-
-            const base64 = resultado.split(",")[1];
-
-            resolve(base64);
-        };
-
-        leitor.onerror = () => {
-            reject(new Error("Erro ao ler o comprovante."));
-        };
-
-        leitor.readAsDataURL(arquivo);
-    });
+    return supabase;
 }
 
 // =====================================
@@ -199,7 +186,6 @@ function arquivoBase64(arquivo) {
 // =====================================
 
 async function enviarCadastro() {
-
     const botao = document.getElementById("finalizar");
     const status = document.getElementById("statusEnvio");
     const campoComprovante = document.getElementById("comprovante");
@@ -219,59 +205,78 @@ async function enviarCadastro() {
 
     botao.disabled = true;
     botao.textContent = "ENVIANDO...";
-
-    status.textContent = "Preparando contratação...";
+    status.textContent = "Conectando ao sistema...";
 
     try {
+        await conectarSupabase();
 
-        const base64 = await arquivoBase64(arquivo);
+        // Nome único para o comprovante
+        const extensao = arquivo.name.includes(".")
+            ? arquivo.name.split(".").pop().toLowerCase()
+            : "bin";
+
+        const nomeArquivo =
+            crypto.randomUUID() + "." + extensao;
+
+        const caminhoArquivo =
+            "comprovantes/" + nomeArquivo;
+
+        // Enviar comprovante para o Storage
+        status.textContent = "Enviando comprovante...";
+
+        const { error: erroUpload } =
+            await supabase.storage
+                .from("comprovantes")
+                .upload(caminhoArquivo, arquivo, {
+                    contentType: arquivo.type || "application/octet-stream",
+                    upsert: false
+                });
+
+        if (erroUpload) {
+            throw erroUpload;
+        }
+
+        // Salvar dados na tabela
+        status.textContent = "Salvando seus dados...";
 
         const dados = {
-
             nome: cliente.nome,
             email: cliente.email,
             telefone: cliente.telefone,
             cpf: cliente.cpf,
-
             curso: cliente.curso,
             valor: valor.toFixed(2),
-
-            comprovante: {
-                nome: arquivo.name,
-                tipo: arquivo.type || "application/octet-stream",
-                base64: base64
-            }
+            comprovante: caminhoArquivo,
+            status: "Pendente"
         };
 
-        status.textContent = "Enviando contratação...";
+        const { error: erroCadastro } =
+            await supabase
+                .from("contratacoes")
+                .insert([dados]);
 
-        await fetch(GOOGLE_SCRIPT_URL, {
+        if (erroCadastro) {
+            // Tenta excluir o comprovante caso o cadastro falhe
+            await supabase.storage
+                .from("comprovantes")
+                .remove([caminhoArquivo]);
 
-            method: "POST",
-
-            mode: "no-cors",
-
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-
-            body: JSON.stringify(dados)
-
-        });
+            throw erroCadastro;
+        }
 
         status.textContent =
-    "✓ Enviado com sucesso! Seus dados e comprovante foram encaminhados para análise. Aguarde a confirmação da contratação.";
+            "✓ Contratação enviada com sucesso! Seus dados e comprovante foram encaminhados para análise. Aguarde a confirmação.";
 
-        botao.textContent = "ENVIO SOLICITADO";
+        botao.textContent = "CONTRATAÇÃO ENVIADA";
 
         localStorage.removeItem("dadosCliente");
 
     } catch (erro) {
-
-        console.error(erro);
+        console.error("Erro no Supabase:", erro);
 
         status.textContent =
-            "Não foi possível enviar. Verifique sua conexão e tente novamente.";
+            "Não foi possível enviar: " +
+            (erro.message || "Erro desconhecido.");
 
         botao.disabled = false;
         botao.textContent = "FINALIZAR CONTRATAÇÃO";
