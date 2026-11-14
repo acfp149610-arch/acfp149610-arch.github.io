@@ -5,7 +5,7 @@
 const SUPABASE_URL = "https://kghzycpuvlidoenqnhhb.supabase.co";
 
 // COLOQUE AQUI SUA PUBLISHABLE KEY CORRETA
-const SUPABASE_KEY = "COLE_SUA_CHAVE_AQUI";
+const SUPABASE_KEY = "sb_publishable_IntMzNdV-nhtxW8czMBijA_4yVRgbIp";
 
 const client = window.supabase.createClient(
     SUPABASE_URL,
