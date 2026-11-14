@@ -133,11 +133,9 @@ async function verComprovante(caminho) {
         return;
     }
 
-    const nomeArquivo = caminho.replace(/^comprovantes\//, "");
-
     const { data, error } = await client.storage
         .from("comprovantes")
-        .createSignedUrl(nomeArquivo, 300);
+        .createSignedUrl(caminho, 300);
 
     if (error) {
         alert("Não foi possível abrir o comprovante: " + error.message);
