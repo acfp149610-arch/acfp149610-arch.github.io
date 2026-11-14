@@ -51,8 +51,9 @@ async function entrar() {
     });
 
     if (error) {
-        mensagem.textContent = "Erro no login: " + error.message;
-        return;
+    mensagem.textContent = "Erro: " + error.message;
+    console.log(error);
+    return;
     }
 
     const { data: admin, error: erroAdmin } = await client
