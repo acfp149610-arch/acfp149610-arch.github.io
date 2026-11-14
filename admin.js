@@ -1,11 +1,10 @@
-// ======================================
-// CONFIGURAÇÃO DO SUPABASE
-// ======================================
+// ===================================
+// CONFIGURAÇÃO
+// ===================================
 
 const SUPABASE_URL = "https://kghzycpuvlidoenqnhhb.supabase.co";
 
-// COLOQUE AQUI SUA PUBLISHABLE KEY CORRETA
-const SUPABASE_KEY = "sb_publishable_IntMzNdV-nhtxW8czMBijA_4yVRgbIp";
+const SUPABASE_KEY = "COLE_SUA_PUBLISHABLE_KEY_AQUI";
 
 const client = window.supabase.createClient(
     SUPABASE_URL,
@@ -19,54 +18,69 @@ const client = window.supabase.createClient(
     }
 );
 
+const $ = id => document.getElementById(id);
 
-// ======================================
-// ENTRAR SEM SENHA
-// ======================================
+
+// ===================================
+// MENSAGENS
+// ===================================
+
+function mensagem(texto) {
+    $("mensagem").textContent = texto;
+}
+
+
+// ===================================
+// ENVIAR LINK DE ACESSO
+// ===================================
 
 async function entrar() {
 
-    const email = document.getElementById("email").value.trim();
-    const mensagem = document.getElementById("mensagem");
+    const email = $("email").value.trim();
 
     if (!email) {
-        mensagem.textContent = "Digite seu e-mail.";
+        mensagem("Digite seu e-mail.");
         return;
     }
 
-    mensagem.textContent = "Enviando link de acesso...";
+    $("btnEntrar").disabled = true;
+    mensagem("Enviando link...");
 
-    const { error } = await client.auth.signInWithOtp({
-        email: email,
-        options: {
-            emailRedirectTo: "https://acfp149610-arch.github.io/admin.html"
-        }
-    });
+    try {
 
-    if (error) {
-        mensagem.textContent = "Erro: " + error.message;
-        console.error(error);
-        return;
+        const { error } = await client.auth.signInWithOtp({
+            email,
+            options: {
+                emailRedirectTo:
+                    "https://acfp149610-arch.github.io/admin.html"
+            }
+        });
+
+        if (error) throw error;
+
+        mensagem("Link enviado! Confira sua caixa de entrada.");
+
+    } catch (error) {
+
+        mensagem("Erro: " + error.message);
+
+    } finally {
+
+        $("btnEntrar").disabled = false;
+
     }
-
-    mensagem.textContent =
-        "Link enviado! Confira seu e-mail e clique no link para acessar.";
 }
 
-window.entrar = entrar;
 
+// ===================================
+// VERIFICAR ADMINISTRADOR
+// ===================================
 
-// ======================================
-// VERIFICAR SE É ADMINISTRADOR
-// ======================================
-
-async function verificarSessao() {
+async function verificarAdministrador() {
 
     const { data, error } = await client.auth.getSession();
 
-    if (error || !data.session) {
-        return;
-    }
+    if (error || !data.session) return;
 
     const usuario = data.session.user;
 
@@ -77,51 +91,47 @@ async function verificarSessao() {
         .maybeSingle();
 
     if (erroAdmin) {
-        console.error(erroAdmin);
-        alert("Erro ao verificar administrador: " + erroAdmin.message);
+        alert("Erro ao verificar acesso: " + erroAdmin.message);
         return;
     }
 
     if (!admin) {
         await client.auth.signOut();
-        alert("Este e-mail não está autorizado como administrador.");
+        alert("Seu e-mail não está autorizado como administrador.");
         return;
     }
 
-    document.getElementById("login").style.display = "none";
-    document.getElementById("painel").style.display = "block";
+    $("login").hidden = true;
+    $("painel").hidden = false;
 
     carregarContratacoes();
 }
 
 
-// ======================================
+// ===================================
 // SAIR
-// ======================================
+// ===================================
 
 async function sair() {
 
     await client.auth.signOut();
 
-    document.getElementById("painel").style.display = "none";
-    document.getElementById("login").style.display = "block";
+    $("painel").hidden = true;
+    $("login").hidden = false;
 
-    document.getElementById("mensagem").textContent =
-        "Você saiu da área administrativa.";
+    mensagem("Você saiu do painel.");
 }
 
-window.sair = sair;
 
-
-// ======================================
+// ===================================
 // CARREGAR CONTRATAÇÕES
-// ======================================
+// ===================================
 
 async function carregarContratacoes() {
 
-    const lista = document.getElementById("listaContratacoes");
+    const lista = $("listaContratacoes");
 
-    lista.innerHTML = "<p>Carregando contratações...</p>";
+    lista.textContent = "Carregando contratações...";
 
     const { data, error } = await client
         .from("contratacoes")
@@ -129,94 +139,88 @@ async function carregarContratacoes() {
         .order("created_at", { ascending: false });
 
     if (error) {
-        lista.innerHTML =
-            "<p>Erro ao carregar: " + escapar(error.message) + "</p>";
+        lista.textContent = "Erro: " + error.message;
         return;
     }
 
-    document.getElementById("total").textContent = data.length;
+    $("total").textContent = data.length;
 
-    document.getElementById("pendentes").textContent =
-        data.filter(item => item.status === "Pendente").length;
+    $("pendentes").textContent =
+        data.filter(x => x.status === "Pendente").length;
 
-    document.getElementById("confirmados").textContent =
-        data.filter(item => item.status === "Confirmado").length;
-
-    if (data.length === 0) {
-        lista.innerHTML = "<p>Nenhuma contratação encontrada.</p>";
-        return;
-    }
+    $("confirmados").textContent =
+        data.filter(x => x.status === "Confirmado").length;
 
     lista.innerHTML = "";
 
+    if (!data.length) {
+        lista.textContent = "Nenhuma contratação encontrada.";
+        return;
+    }
+
     data.forEach(item => {
 
-        const card = document.createElement("div");
+        const card = document.createElement("article");
         card.className = "contratacao";
 
-        const informacoes = document.createElement("div");
+        const titulo = document.createElement("h3");
+        titulo.textContent = item.nome || "Sem nome";
 
-        informacoes.innerHTML = `
-            <h3>${escapar(item.nome)}</h3>
-            <p><strong>E-mail:</strong> ${escapar(item.email)}</p>
-            <p><strong>Telefone:</strong> ${escapar(item.telefone)}</p>
-            <p><strong>CPF:</strong> ${escapar(item.cpf)}</p>
-            <p><strong>Curso:</strong> ${escapar(item.curso)}</p>
-            <p><strong>Valor:</strong> ${escapar(item.valor)}</p>
-            <p><strong>Status:</strong> ${escapar(item.status)}</p>
-            <p><strong>Data:</strong> ${escapar(item.created_at)}</p>
-        `;
+        card.appendChild(titulo);
 
-        card.appendChild(informacoes);
+        const campos = [
+            ["E-mail", item.email],
+            ["Telefone", item.telefone],
+            ["CPF", item.cpf],
+            ["Curso", item.curso],
+            ["Valor", item.valor],
+            ["Status", item.status],
+            ["Data", item.created_at]
+        ];
 
-        const botoes = document.createElement("div");
+        campos.forEach(([nome, valor]) => {
 
-        const comprovante = document.createElement("button");
-        comprovante.textContent = "Ver comprovante";
-        comprovante.onclick = () => verComprovante(item.comprovante);
+            const p = document.createElement("p");
+            p.textContent = nome + ": " + (valor ?? "-");
+
+            card.appendChild(p);
+
+        });
+
+        const acoes = document.createElement("div");
+        acoes.className = "acoes";
+
+        const ver = document.createElement("button");
+        ver.textContent = "Ver comprovante";
+        ver.onclick = () => verComprovante(item.comprovante);
 
         const confirmar = document.createElement("button");
-        confirmar.textContent = "Confirmar e enviar e-mail";
+        confirmar.className = "confirmar";
+        confirmar.textContent = "Confirmar";
         confirmar.onclick = () => confirmarContratacao(item.id);
 
         const recusar = document.createElement("button");
-        recusar.textContent = "Marcar como recusado";
+        recusar.className = "recusar";
+        recusar.textContent = "Recusar";
         recusar.onclick = () => recusarContratacao(item.id);
 
-        botoes.append(comprovante, confirmar, recusar);
-        card.appendChild(botoes);
+        acoes.append(ver, confirmar, recusar);
+        card.appendChild(acoes);
 
         lista.appendChild(card);
+
     });
 }
 
-window.carregarContratacoes = carregarContratacoes;
 
-
-// ======================================
-// PROTEGER TEXTO
-// ======================================
-
-function escapar(valor) {
-
-    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-    })[caractere]);
-}
-
-
-// ======================================
+// ===================================
 // VER COMPROVANTE
-// ======================================
+// ===================================
 
 async function verComprovante(caminho) {
 
     if (!caminho) {
-        alert("Esta contratação não possui comprovante.");
+        alert("Comprovante não encontrado.");
         return;
     }
 
@@ -225,7 +229,7 @@ async function verComprovante(caminho) {
         .createSignedUrl(caminho, 300);
 
     if (error) {
-        alert("Não foi possível abrir o comprovante: " + error.message);
+        alert("Erro: " + error.message);
         return;
     }
 
@@ -233,58 +237,62 @@ async function verComprovante(caminho) {
 }
 
 
-// ======================================
+// ===================================
 // CONFIRMAR CONTRATAÇÃO
-// ======================================
+// ===================================
 
 async function confirmarContratacao(id) {
 
-    if (!confirm("Deseja confirmar esta contratação e enviar o e-mail?")) {
+    if (!confirm("Deseja confirmar esta contratação?")) return;
+
+    const { data } = await client.auth.getSession();
+
+    if (!data.session) {
+        alert("Sessão expirada. Entre novamente.");
         return;
     }
 
-    const { data: sessao } = await client.auth.getSession();
+    try {
 
-    if (!sessao.session) {
-        alert("Sua sessão expirou. Entre novamente.");
-        return;
-    }
+        const resposta = await fetch(
+            SUPABASE_URL + "/functions/v1/confirmar-contratacao",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization":
+                        "Bearer " + data.session.access_token,
+                    "apikey": SUPABASE_KEY
+                },
+                body: JSON.stringify({ id })
+            }
+        );
 
-    const resposta = await fetch(
-        SUPABASE_URL + "/functions/v1/confirmar-contratacao",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + sessao.session.access_token,
-                "apikey": SUPABASE_KEY
-            },
-            body: JSON.stringify({ id })
+        const resultado = await resposta.json();
+
+        if (!resposta.ok) {
+            throw new Error(resultado.error || "Falha ao confirmar.");
         }
-    );
 
-    const resultado = await resposta.json();
+        alert("Contratação confirmada!");
 
-    if (!resposta.ok) {
-        alert(resultado.error || "Não foi possível confirmar.");
-        return;
+        carregarContratacoes();
+
+    } catch (error) {
+
+        alert(error.message);
+
     }
-
-    alert("Contratação confirmada e e-mail enviado!");
-
-    carregarContratacoes();
 }
 
 
-// ======================================
+// ===================================
 // RECUSAR CONTRATAÇÃO
-// ======================================
+// ===================================
 
 async function recusarContratacao(id) {
 
-    if (!confirm("Deseja marcar esta contratação como recusada?")) {
-        return;
-    }
+    if (!confirm("Deseja recusar esta contratação?")) return;
 
     const { error } = await client
         .from("contratacoes")
@@ -296,14 +304,27 @@ async function recusarContratacao(id) {
         return;
     }
 
-    alert("Contratação marcada como recusada.");
+    alert("Contratação recusada.");
 
     carregarContratacoes();
 }
 
 
-// ======================================
-// INICIAR SISTEMA
-// ======================================
+// ===================================
+// INICIAR
+// ===================================
 
-document.addEventListener("DOMContentLoaded", verificarSessao);
+document.addEventListener("DOMContentLoaded", () => {
+
+    $("btnEntrar").addEventListener("click", entrar);
+
+    $("btnSair").addEventListener("click", sair);
+
+    $("btnAtualizar").addEventListener(
+        "click",
+        carregarContratacoes
+    );
+
+    verificarAdministrador();
+
+});
