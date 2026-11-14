@@ -18,19 +18,17 @@
     </header>
 
     <main>
-
         <section id="login">
             <h2>Entrar como administrador</h2>
 
             <input type="email" id="email" placeholder="Seu e-mail">
 
-            <button onclick="entrar()">Entrar</button>
+            <button type="button" onclick="entrar()">Enviar link de acesso</button>
 
             <p id="mensagem"></p>
         </section>
 
         <section id="painel" style="display:none;">
-
             <div class="topo-painel">
                 <h2>Contratações recebidas</h2>
                 <button onclick="sair()">Sair</button>
@@ -48,21 +46,4 @@
                 </div>
 
                 <div>
-                    <h3 id="confirmados">0</h3>
-                    <p>Confirmados</p>
-                </div>
-            </div>
-
-            <button onclick="carregarContratacoes()">Atualizar lista</button>
-
-            <div id="listaContratacoes"></div>
-
-        </section>
-
-    </main>
-
-    <script src="admin.js"></script>
-
-</body>
-</html>
-window.entrar = entrar;
+                    <h3 id="confirmados">0</
