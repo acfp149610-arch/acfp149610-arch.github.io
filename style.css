@@ -1,139 +1,97 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 
-:root {
-    --vermelho: #c82032;
-    --vermelho-escuro: #941323;
-    --preto: #101010;
-    --cinza: #1c1c1c;
-    --branco: #ffffff;
-    --texto: #cccccc;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
-    background: var(--preto);
-    color: var(--branco);
+    background: #f4f8ff;
+    color: #102b50;
 }
 
 /* CABEÇALHO */
 
 header {
     width: 100%;
-    min-height: 82px;
-    padding: 0 7%;
+    min-height: 80px;
+    padding: 20px 8%;
+    background: #082b59;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #101010;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-wrap: wrap;
+    gap: 15px;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
+    box-shadow: 0 3px 15px #001b3d30;
 }
 
 header h2 {
-    color: #ffffff;
-    font-size: 19px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-    white-space: nowrap;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
 }
 
 nav {
     display: flex;
-    align-items: center;
-    gap: 32px;
+    gap: 25px;
+    flex-wrap: wrap;
 }
 
 nav a {
-    color: #eeeeee;
     text-decoration: none;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .7px;
-    transition: color .3s ease;
+    color: #dceaff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
 nav a:hover {
-    color: #c82032;
+    color: #61b8ff;
 }
 
-nav a:last-child {
-    background: #c82032;
-    color: #ffffff;
-    padding: 13px 21px;
-    border-radius: 5px;
-    transition: .3s ease;
-}
-
-nav a:last-child:hover {
-    background: #941323;
-    transform: translateY(-2px);
-}
-
-/* CABEÇALHO NO CELULAR */
-
-@media (max-width: 750px) {
-
-    header {
-        padding: 20px 15px;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    header h2 {
-        font-size: 17px;
-        text-align: center;
-    }
-
-    nav {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 17px;
-    }
-
-    nav a {
-        font-size: 10px;
-    }
-
-    nav a:last-child {
-        padding: 10px 13px;
-    }
-}
 /* INÍCIO */
 
 #inicio {
-    min-height: 85vh;
+    min-height: 570px;
+    background: linear-gradient(135deg, #061d40, #0756a5, #168bd5);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px 20px;
-    background:
-        radial-gradient(ellipse at center, #47121b 0%, #1a1012 45%, #101010 80%);
+    padding: 50px 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+#inicio::before {
+    content: "∑";
+    position: absolute;
+    font-size: 350px;
+    color: #ffffff12;
+    right: 5%;
+    top: 10px;
 }
 
 #inicio h1 {
-    font-size: clamp(35px, 7vw, 75px);
-    font-weight: 900;
-    letter-spacing: 2px;
-    line-height: 1.1;
+    font-size: clamp(32px, 6vw, 65px);
+    font-weight: 800;
+    position: relative;
 }
 
 .subtitulo {
-    color: var(--vermelho);
-    font-size: 17px;
-    font-weight: 800;
+    font-size: 20px;
     letter-spacing: 8px;
-    margin-top: 25px;
+    color: #9ddaff;
+    margin-top: 15px;
+    font-weight: 600;
 }
 
 /* SOBRE */
@@ -141,174 +99,159 @@ nav a:last-child:hover {
 #sobre {
     padding: 100px 12%;
     text-align: center;
-    background: #171717;
+    background: white;
 }
 
 #sobre h3,
-#questoes h3,
-.cursos {
-    font-size: 30px;
-    font-weight: 900;
-    margin-bottom: 35px;
-}
-
-#sobre h3::after,
-#questoes h3::after {
-    content: "";
-    display: block;
-    width: 65px;
-    height: 4px;
-    background: var(--vermelho);
-    margin: 15px auto 0;
-    border-radius: 5px;
+#questoes h3 {
+    font-size: 32px;
+    color: #0756a5;
+    margin-bottom: 30px;
+    font-weight: 800;
 }
 
 .apresentacao {
-    max-width: 900px;
+    max-width: 850px;
     margin: auto;
-    color: var(--texto);
-    font-size: 15px;
+    font-size: 16px;
     line-height: 2;
-    white-space: pre-line;
+    color: #536984;
+    text-align: justify;
 }
 
 /* CURSOS */
 
 #cursos {
-    padding: 100px 8%;
+    padding: 90px 8%;
     text-align: center;
+    background: #eaf3ff;
 }
 
 .cursos {
-    margin-bottom: 50px;
+    font-size: 35px;
+    color: #0756a5;
+    margin-bottom: 45px;
 }
 
 .cursoum,
 .cursodois {
     display: inline-block;
     vertical-align: top;
-    width: 40%;
-    max-width: 420px;
-    min-width: 260px;
-    margin: 15px;
-    padding: 40px 30px;
-    background: linear-gradient(145deg, #242424, #171717);
-    border: 1px solid #383838;
-    border-radius: 14px;
-    transition: .3s;
+    width: 320px;
+    max-width: 100%;
+    min-height: 260px;
+    background: white;
+    padding: 35px 25px;
+    margin: 12px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px #073b7515;
+    border-bottom: 5px solid #168bd5;
+    transition: 0.3s;
 }
 
 .cursoum:hover,
 .cursodois:hover {
-    transform: translateY(-7px);
-    border-color: var(--vermelho);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px #073b7525;
 }
 
 .curso1,
 .curso2 {
-    font-size: 24px;
-    font-weight: 800;
+    font-size: 23px;
+    color: #0756a5;
     margin-bottom: 20px;
 }
 
 .curso11,
 .curso21 {
-    color: var(--texto);
-    line-height: 1.8;
-    margin-bottom: 25px;
+    color: #62758e;
+    margin-bottom: 30px;
+    line-height: 1.7;
 }
 
-.cursoum button,
-.cursodois button {
-    background: var(--vermelho);
+button {
+    background: #0875c9;
     color: white;
     border: none;
-    padding: 15px 35px;
-    border-radius: 7px;
-    font-weight: 800;
+    padding: 13px 30px;
+    border-radius: 8px;
+    font-weight: 700;
     cursor: pointer;
-    transition: .3s;
+    transition: 0.3s;
 }
 
-.cursoum button:hover,
-.cursodois button:hover {
-    background: var(--vermelho-escuro);
+button:hover {
+    background: #06447f;
     transform: scale(1.04);
 }
 
 /* QUESTÕES */
 
 #questoes {
-    padding: 90px 20px;
+    padding: 90px 10%;
     text-align: center;
-    background: #171717;
+    background: white;
 }
 
-#questoes a {
+#questoes p {
     display: inline-block;
+    width: 220px;
+    padding: 25px;
     margin: 12px;
-    padding: 20px 35px;
-    background: #252525;
-    border: 1px solid #444;
-    border-radius: 8px;
+    border-radius: 12px;
+    background: #eaf3ff;
+    color: #0756a5;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid #c5ddf8;
+}
+
+#questoes p:hover {
+    background: #0875c9;
     color: white;
-    text-decoration: none;
-    font-weight: 800;
-    transition: .3s;
+    transform: translateY(-5px);
 }
 
-#questoes a:hover {
-    background: var(--vermelho);
-    border-color: var(--vermelho);
-    transform: translateY(-4px);
-}
+/* RESPONSIVIDADE */
 
-/* CELULAR */
-
-@media (max-width: 750px) {
-
+@media (max-width: 700px) {
     header {
-        flex-direction: column;
-        gap: 20px;
-        padding: 22px 15px;
+        justify-content: center;
+        text-align: center;
     }
 
     nav {
         justify-content: center;
-        flex-wrap: wrap;
         gap: 15px;
     }
 
-    nav a {
-        font-size: 10px;
-    }
-
-    nav a:last-child {
-        padding: 10px 13px;
-    }
-
     #inicio {
-        min-height: 70vh;
+        min-height: 450px;
     }
 
     .subtitulo {
-        font-size: 13px;
+        font-size: 15px;
         letter-spacing: 5px;
     }
 
-    #sobre,
-    #cursos {
-        padding: 70px 20px;
+    #sobre {
+        padding: 65px 8%;
+    }
+
+    .apresentacao {
+        text-align: left;
+        font-size: 14px;
+    }
+
+    #cursos,
+    #questoes {
+        padding: 65px 5%;
     }
 
     .cursoum,
     .cursodois {
         width: 100%;
-        max-width: 100%;
         margin: 12px 0;
-    }
-
-    .apresentacao {
-        font-size: 13px;
     }
 }
