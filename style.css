@@ -189,42 +189,82 @@ button:hover {
 
 #questoes {
     padding: 90px 8%;
+    background: #ffffff;
     text-align: center;
-    background: #f4f8ff;
 }
 
 #questoes h3 {
-    font-size: clamp(26px, 4vw, 36px);
+    font-size: 36px;
     color: #0756a5;
-    margin-bottom: 40px;
     font-weight: 800;
+    margin-bottom: 45px;
 }
 
-#questoes p {
+#questoes a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    vertical-align: top;
-    width: 260px;
-    min-height: 100px;
-    padding: 25px;
+
+    width: 240px;
+    min-height: 115px;
+
     margin: 12px;
-    border-radius: 16px;
-    background: white;
+    padding: 25px;
+
+    background: #ffffff;
     color: #0756a5;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
+
+    border: 1px solid #dceaff;
+    border-bottom: 5px solid #168bd5;
+    border-radius: 18px;
+
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 800;
+
+    box-shadow: 0 8px 25px rgba(7, 86, 165, 0.09);
+
     transition: all 0.3s ease;
-    border: 1px solid #c5ddf8;
-    box-shadow: 0 6px 20px #073b7510;
 }
 
-#questoes p:hover {
-    background: linear-gradient(135deg, #0756a5, #168bd5);
+#questoes a::before {
+    content: "∑";
+    font-size: 30px;
+    margin-right: 12px;
+    color: #168bd5;
+}
+
+#questoes a:hover {
+    background: #0756a5;
     color: white;
-    transform: translateY(-6px);
-    box-shadow: 0 12px 25px #0756a530;
+    transform: translateY(-7px);
+    border-bottom-color: #168bd5;
+    box-shadow: 0 15px 30px rgba(7, 86, 165, 0.2);
+}
+
+#questoes a:hover::before {
+    color: white;
+}
+
+/* CELULAR */
+
+@media (max-width: 700px) {
+    #questoes {
+        padding: 65px 5%;
+    }
+
+    #questoes h3 {
+        font-size: 29px;
+        margin-bottom: 30px;
+    }
+
+    #questoes a {
+        width: 100%;
+        max-width: 350px;
+        min-height: 90px;
+        margin: 9px 0;
+        font-size: 18px;
+    }
 }
 
 /* CELULAR */
