@@ -188,29 +188,59 @@ button:hover {
 /* QUESTÕES */
 
 #questoes {
-    padding: 90px 10%;
+    padding: 90px 8%;
     text-align: center;
-    background: white;
+    background: #f4f8ff;
+}
+
+#questoes h3 {
+    font-size: clamp(26px, 4vw, 36px);
+    color: #0756a5;
+    margin-bottom: 40px;
+    font-weight: 800;
 }
 
 #questoes p {
-    display: inline-block;
-    width: 220px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: top;
+    width: 260px;
+    min-height: 100px;
     padding: 25px;
     margin: 12px;
-    border-radius: 12px;
-    background: #eaf3ff;
+    border-radius: 16px;
+    background: white;
     color: #0756a5;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
     border: 1px solid #c5ddf8;
+    box-shadow: 0 6px 20px #073b7510;
 }
 
 #questoes p:hover {
-    background: #0875c9;
+    background: linear-gradient(135deg, #0756a5, #168bd5);
     color: white;
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px #0756a530;
+}
+
+/* CELULAR */
+
+@media (max-width: 700px) {
+    #questoes {
+        padding: 60px 5%;
+    }
+
+    #questoes p {
+        width: 100%;
+        max-width: 350px;
+        min-height: 85px;
+        margin: 8px 0;
+        font-size: 15px;
+    }
 }
 
 /* RESPONSIVIDADE */
