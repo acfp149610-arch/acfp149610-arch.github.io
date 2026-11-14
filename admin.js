@@ -13,6 +13,51 @@ const client = window.supabase.createClient(
         }
     }
 );
+async function entrar() {
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+    const mensagem = document.getElementById("mensagem");
+
+    if (!email || !senha) {
+        mensagem.textContent = "Preencha o e-mail e a senha.";
+        return;
+    }
+
+    mensagem.textContent = "Verificando acesso...";
+
+    const { data, error } = await client.auth.signInWithPassword({
+        email: email,
+        password: senha
+    });
+
+    if (error) {
+        console.error("Erro Supabase:", error);
+        mensagem.textContent = "Erro: " + error.message;
+        return;
+    }
+
+    const { data: admin, error: erroAdmin } = await client
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+
+    if (erroAdmin) {
+        mensagem.textContent = "Erro ao verificar administrador: " + erroAdmin.message;
+        return;
+    }
+
+    if (!admin) {
+        await client.auth.signOut();
+        mensagem.textContent = "Login realizado, mas seu usuário não está cadastrado como administrador.";
+        return;
+    }
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("painel").style.display = "block";
+
+    carregarContratacoes();
+}
 async function verificarSessao() {
     const { data, error } = await client.auth.getSession();
 
