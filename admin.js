@@ -8,19 +8,19 @@ const client = window.supabase.createClient(
 );
 
 async function entrar() {
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value;
     const mensagem = document.getElementById("mensagem");
 
     mensagem.textContent = "Verificando acesso...";
 
     const { data, error } = await client.auth.signInWithPassword({
-        email,
+        email: email,
         password: senha
     });
 
     if (error) {
-        mensagem.textContent = "E-mail ou senha incorretos.";
+        mensagem.textContent = "Erro no login: " + error.message;
         return;
     }
 
@@ -32,7 +32,7 @@ async function entrar() {
 
     if (erroAdmin || !admin) {
         await client.auth.signOut();
-        mensagem.textContent = "Este usuário não tem permissão de administrador.";
+        mensagem.textContent = "Login realizado, mas este usuário não é administrador.";
         return;
     }
 
@@ -40,11 +40,6 @@ async function entrar() {
     document.getElementById("painel").style.display = "block";
 
     carregarContratacoes();
-}
-
-async function sair() {
-    await client.auth.signOut();
-    location.reload();
 }
 
 async function carregarContratacoes() {
