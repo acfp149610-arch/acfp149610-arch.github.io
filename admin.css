@@ -2,19 +2,19 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 body {
-    background: #f2f5fa;
-    color: #222;
+    font-family: Arial, sans-serif;
+    background: #f3f5fa;
+    color: #202b3c;
 }
 
 header {
-    background: #164b91;
+    background: #173d70;
     color: white;
+    padding: 30px 20px;
     text-align: center;
-    padding: 30px 15px;
 }
 
 header h1 {
@@ -22,73 +22,113 @@ header h1 {
 }
 
 main {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 15px;
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 20px;
 }
 
-section {
+.login {
     background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
+    max-width: 430px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 5px 25px #00000012;
+    text-align: center;
+}
+
+.login h2 {
+    margin-bottom: 12px;
+}
+
+.login p {
+    margin-bottom: 18px;
+    color: #657083;
 }
 
 input {
-    display: block;
     width: 100%;
-    padding: 13px;
+    padding: 14px;
+    border: 1px solid #d5dbe5;
+    border-radius: 8px;
     margin: 12px 0;
-    border: 1px solid #ccc;
-    border-radius: 7px;
+    font-size: 16px;
 }
 
 button {
-    background: #164b91;
-    color: white;
     border: none;
-    padding: 12px 18px;
-    border-radius: 7px;
+    padding: 13px 18px;
+    border-radius: 8px;
+    background: #1764b1;
+    color: white;
     cursor: pointer;
-    margin: 8px 5px 8px 0;
+    font-weight: bold;
+    margin: 5px;
 }
 
 button:hover {
-    background: #0d3569;
+    opacity: .85;
 }
 
-.topo-painel {
+#btnEntrar {
+    width: 100%;
+}
+
+#mensagem {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.topo {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
 .resumo {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin: 25px 0;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
-.resumo div {
-    background: #eaf1fb;
-    padding: 20px;
-    border-radius: 10px;
+.box {
+    background: white;
+    padding: 25px;
     text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px #0000000c;
 }
 
-.resumo h3 {
-    color: #164b91;
-    font-size: 28px;
+.box span {
+    font-size: 30px;
+    font-weight: bold;
+    color: #1764b1;
+}
+
+.ferramentas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .contratacao {
-    border: 1px solid #ddd;
-    padding: 18px;
-    border-radius: 10px;
-    margin-top: 15px;
+    background: white;
+    padding: 22px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px #0000000c;
+}
+
+.contratacao h3 {
+    color: #1764b1;
+    margin-bottom: 12px;
 }
 
 .contratacao p {
@@ -96,18 +136,34 @@ button:hover {
     overflow-wrap: anywhere;
 }
 
-.comprovante {
-    display: inline-block;
-    margin: 10px 0;
-    color: #164b91;
+.acoes {
+    margin-top: 15px;
 }
 
-.status {
-    font-weight: bold;
+.confirmar {
+    background: #16834b;
 }
 
-@media (max-width: 600px) {
+.recusar {
+    background: #c83d3d;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #777;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media(max-width: 600px) {
     .resumo {
         grid-template-columns: 1fr;
+    }
+
+    .topo {
+        align-items: flex-start;
     }
 }
