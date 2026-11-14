@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,116 +10,119 @@
 
     <style>
         body {
+            background: #080808;
+            color: #fff;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
         .login-container {
-            flex: 1;
+            min-height: calc(100vh - 82px);
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 40px 20px;
-            background:
-                radial-gradient(ellipse at center, #47121b 0%, #1a1012 45%, #101010 85%);
+            align-items: center;
+            padding: 50px 20px;
+            background: #080808;
         }
 
-        .login-box {
+        .login-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 430px;
             padding: 40px;
-            background: #1c1c1c;
-            border: 1px solid #383838;
-            border-radius: 15px;
-            box-shadow: 0 15px 50px rgba(0,0,0,.4);
+            background: #151515;
+            border: 1px solid #292929;
+            border-radius: 12px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.4);
         }
 
-        .login-box h1 {
-            font-size: 25px;
-            font-weight: 900;
-            text-align: center;
+        .login-card h1 {
+            font-size: 30px;
             margin-bottom: 10px;
+            color: #fff;
         }
 
-        .login-box .descricao {
+        .login-card .subtitulo {
             color: #aaa;
-            font-size: 13px;
-            text-align: center;
+            font-size: 14px;
             margin-bottom: 30px;
         }
 
-        .login-box h3 {
-            font-size: 17px;
-            margin-bottom: 20px;
+        .login-card label {
+            display: block;
+            margin-bottom: 8px;
+            color: #eee;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .login-box input {
+        .login-card input {
             width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #292929;
-            border: 1px solid #444;
-            border-radius: 7px;
+            padding: 14px;
+            margin-bottom: 20px;
+            background: #0d0d0d;
+            border: 1px solid #383838;
+            border-radius: 6px;
             color: white;
-            outline: none;
             font-size: 14px;
+            outline: none;
         }
 
-        .login-box input:focus {
+        .login-card input:focus {
             border-color: #c82032;
         }
 
-        .login-box button {
+        .login-card button {
             width: 100%;
             padding: 15px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 7px;
             background: #c82032;
             color: white;
+            border: none;
+            border-radius: 6px;
             font-weight: 800;
             cursor: pointer;
             transition: .3s;
         }
 
-        .login-box button:hover {
+        .login-card button:hover {
             background: #941323;
+            transform: translateY(-2px);
         }
 
-        .login-box .secundario {
-            background: #303030;
-            border: 1px solid #444;
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 22px;
         }
 
-        .login-box .secundario:hover {
-            background: #444;
+        .login-links button {
+            width: auto;
+            padding: 0;
+            background: transparent;
+            color: #ccc;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .login-links button:hover {
+            background: transparent;
+            color: #c82032;
+            transform: none;
         }
 
         #mensagem {
-            color: #ff6474;
+            margin-top: 18px;
             font-size: 13px;
+            color: #ddd;
             text-align: center;
-            margin-top: 20px;
-            line-height: 1.6;
         }
 
-        .voltar {
-            display: block;
-            margin-top: 25px;
-            text-align: center;
-            color: #aaa;
-            font-size: 12px;
-            text-decoration: none;
-        }
+        @media (max-width: 500px) {
+            .login-card {
+                padding: 28px 22px;
+            }
 
-        .voltar:hover {
-            color: #c82032;
-        }
-
-        @media(max-width: 480px) {
-            .login-box {
-                padding: 30px 22px;
+            .login-card h1 {
+                font-size: 25px;
             }
         }
     </style>
@@ -130,59 +132,61 @@
 
     <header>
         <h2>MATEMÁTICA COM ZÉ VITOR</h2>
+
         <nav>
             <a href="index.html">INÍCIO</a>
             <a href="index.html#cursos">CURSOS</a>
+            <a href="login.html">ENTRAR</a>
         </nav>
     </header>
 
     <main class="login-container">
 
-        <div class="login-box">
+        <section class="login-card">
 
-            <h1>SEJA BEM-VINDO!</h1>
+            <h1>Bem-vindo!</h1>
 
-            <p class="descricao">
-                Acesse sua conta e continue sua jornada na Matemática.
+            <p class="subtitulo">
+                Entre na sua conta para acessar seus cursos.
             </p>
-
-            <h3>Entrar na sua conta</h3>
 
             <form id="formLogin">
 
+                <label for="email">E-mail</label>
                 <input
                     type="email"
                     id="email"
-                    placeholder="Seu e-mail"
+                    placeholder="Digite seu e-mail"
                     required
                 >
 
+                <label for="senha">Senha</label>
                 <input
                     type="password"
                     id="senha"
-                    placeholder="Sua senha"
+                    placeholder="Digite sua senha"
                     required
                 >
 
-                <button type="submit">ENTRAR</button>
+                <button type="submit">ENTRAR NA CONTA</button>
 
             </form>
 
-            <button class="secundario" id="cadastrar">
-                CRIAR MINHA CONTA
-            </button>
+            <div class="login-links">
 
-            <button class="secundario" id="recuperar">
-                ESQUECI MINHA SENHA
-            </button>
+                <button type="button" id="cadastrar">
+                    Criar conta
+                </button>
+
+                <button type="button" id="recuperar">
+                    Esqueci minha senha
+                </button>
+
+            </div>
 
             <p id="mensagem"></p>
 
-            <a href="index.html" class="voltar">
-                VOLTAR PARA A PÁGINA INICIAL
-            </a>
-
-        </div>
+        </section>
 
     </main>
 
