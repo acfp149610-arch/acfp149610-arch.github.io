@@ -1,97 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+:root {
+    --vermelho: #c82032;
+    --vermelho-escuro: #941323;
+    --preto: #101010;
+    --cinza: #1c1c1c;
+    --branco: #ffffff;
+    --texto: #cccccc;
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
     scroll-behavior: smooth;
 }
 
 body {
-    background: #f4f8ff;
-    color: #102b50;
+    font-family: 'Montserrat', sans-serif;
+    background: var(--preto);
+    color: var(--branco);
 }
 
 /* CABEÇALHO */
 
 header {
     width: 100%;
-    min-height: 80px;
-    padding: 20px 8%;
-    background: #082b59;
+    min-height: 85px;
+    padding: 20px 7%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
+    background: #111;
+    border-bottom: 1px solid #292929;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 3px 15px #001b3d30;
 }
 
 header h2 {
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: 1px;
 }
 
 nav {
     display: flex;
-    gap: 25px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 28px;
 }
 
 nav a {
     text-decoration: none;
-    color: #dceaff;
-    font-size: 13px;
-    font-weight: 600;
-    transition: 0.3s;
+    color: #ddd;
+    font-size: 12px;
+    font-weight: 700;
+    transition: .3s;
 }
 
 nav a:hover {
-    color: #61b8ff;
+    color: var(--vermelho);
+}
+
+nav a:last-child {
+    background: var(--vermelho);
+    color: white;
+    padding: 13px 20px;
+    border-radius: 7px;
+}
+
+nav a:last-child:hover {
+    background: var(--vermelho-escuro);
 }
 
 /* INÍCIO */
 
 #inicio {
-    min-height: 570px;
-    background: linear-gradient(135deg, #061d40, #0756a5, #168bd5);
+    min-height: 85vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 50px 20px;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-#inicio::before {
-    content: "∑";
-    position: absolute;
-    font-size: 350px;
-    color: #ffffff12;
-    right: 5%;
-    top: 10px;
+    padding: 60px 20px;
+    background:
+        radial-gradient(ellipse at center, #47121b 0%, #1a1012 45%, #101010 80%);
 }
 
 #inicio h1 {
-    font-size: clamp(32px, 6vw, 65px);
-    font-weight: 800;
-    position: relative;
+    font-size: clamp(35px, 7vw, 75px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    line-height: 1.1;
 }
 
 .subtitulo {
-    font-size: 20px;
+    color: var(--vermelho);
+    font-size: 17px;
+    font-weight: 800;
     letter-spacing: 8px;
-    color: #9ddaff;
-    margin-top: 15px;
-    font-weight: 600;
+    margin-top: 25px;
 }
 
 /* SOBRE */
@@ -99,159 +106,174 @@ nav a:hover {
 #sobre {
     padding: 100px 12%;
     text-align: center;
-    background: white;
+    background: #171717;
 }
 
 #sobre h3,
-#questoes h3 {
-    font-size: 32px;
-    color: #0756a5;
-    margin-bottom: 30px;
-    font-weight: 800;
+#questoes h3,
+.cursos {
+    font-size: 30px;
+    font-weight: 900;
+    margin-bottom: 35px;
+}
+
+#sobre h3::after,
+#questoes h3::after {
+    content: "";
+    display: block;
+    width: 65px;
+    height: 4px;
+    background: var(--vermelho);
+    margin: 15px auto 0;
+    border-radius: 5px;
 }
 
 .apresentacao {
-    max-width: 850px;
+    max-width: 900px;
     margin: auto;
-    font-size: 16px;
+    color: var(--texto);
+    font-size: 15px;
     line-height: 2;
-    color: #536984;
-    text-align: justify;
+    white-space: pre-line;
 }
 
 /* CURSOS */
 
 #cursos {
-    padding: 90px 8%;
+    padding: 100px 8%;
     text-align: center;
-    background: #eaf3ff;
 }
 
 .cursos {
-    font-size: 35px;
-    color: #0756a5;
-    margin-bottom: 45px;
+    margin-bottom: 50px;
 }
 
 .cursoum,
 .cursodois {
     display: inline-block;
     vertical-align: top;
-    width: 320px;
-    max-width: 100%;
-    min-height: 260px;
-    background: white;
-    padding: 35px 25px;
-    margin: 12px;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px #073b7515;
-    border-bottom: 5px solid #168bd5;
-    transition: 0.3s;
+    width: 40%;
+    max-width: 420px;
+    min-width: 260px;
+    margin: 15px;
+    padding: 40px 30px;
+    background: linear-gradient(145deg, #242424, #171717);
+    border: 1px solid #383838;
+    border-radius: 14px;
+    transition: .3s;
 }
 
 .cursoum:hover,
 .cursodois:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px #073b7525;
+    transform: translateY(-7px);
+    border-color: var(--vermelho);
 }
 
 .curso1,
 .curso2 {
-    font-size: 23px;
-    color: #0756a5;
+    font-size: 24px;
+    font-weight: 800;
     margin-bottom: 20px;
 }
 
 .curso11,
 .curso21 {
-    color: #62758e;
-    margin-bottom: 30px;
-    line-height: 1.7;
+    color: var(--texto);
+    line-height: 1.8;
+    margin-bottom: 25px;
 }
 
-button {
-    background: #0875c9;
+.cursoum button,
+.cursodois button {
+    background: var(--vermelho);
     color: white;
     border: none;
-    padding: 13px 30px;
-    border-radius: 8px;
-    font-weight: 700;
+    padding: 15px 35px;
+    border-radius: 7px;
+    font-weight: 800;
     cursor: pointer;
-    transition: 0.3s;
+    transition: .3s;
 }
 
-button:hover {
-    background: #06447f;
+.cursoum button:hover,
+.cursodois button:hover {
+    background: var(--vermelho-escuro);
     transform: scale(1.04);
 }
 
 /* QUESTÕES */
 
 #questoes {
-    padding: 90px 10%;
+    padding: 90px 20px;
     text-align: center;
-    background: white;
+    background: #171717;
 }
 
-#questoes p {
+#questoes a {
     display: inline-block;
-    width: 220px;
-    padding: 25px;
     margin: 12px;
-    border-radius: 12px;
-    background: #eaf3ff;
-    color: #0756a5;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s;
-    border: 1px solid #c5ddf8;
-}
-
-#questoes p:hover {
-    background: #0875c9;
+    padding: 20px 35px;
+    background: #252525;
+    border: 1px solid #444;
+    border-radius: 8px;
     color: white;
-    transform: translateY(-5px);
+    text-decoration: none;
+    font-weight: 800;
+    transition: .3s;
 }
 
-/* RESPONSIVIDADE */
+#questoes a:hover {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+    transform: translateY(-4px);
+}
 
-@media (max-width: 700px) {
+/* CELULAR */
+
+@media (max-width: 750px) {
+
     header {
-        justify-content: center;
-        text-align: center;
+        flex-direction: column;
+        gap: 20px;
+        padding: 22px 15px;
     }
 
     nav {
         justify-content: center;
+        flex-wrap: wrap;
         gap: 15px;
     }
 
+    nav a {
+        font-size: 10px;
+    }
+
+    nav a:last-child {
+        padding: 10px 13px;
+    }
+
     #inicio {
-        min-height: 450px;
+        min-height: 70vh;
     }
 
     .subtitulo {
-        font-size: 15px;
+        font-size: 13px;
         letter-spacing: 5px;
     }
 
-    #sobre {
-        padding: 65px 8%;
-    }
-
-    .apresentacao {
-        text-align: left;
-        font-size: 14px;
-    }
-
-    #cursos,
-    #questoes {
-        padding: 65px 5%;
+    #sobre,
+    #cursos {
+        padding: 70px 20px;
     }
 
     .cursoum,
     .cursodois {
         width: 100%;
+        max-width: 100%;
         margin: 12px 0;
+    }
+
+    .apresentacao {
+        font-size: 13px;
     }
 }
