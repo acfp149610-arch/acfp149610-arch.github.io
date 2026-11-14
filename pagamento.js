@@ -218,8 +218,7 @@ async function enviarCadastro() {
         const nomeArquivo =
             crypto.randomUUID() + "." + extensao;
 
-        const caminhoArquivo =
-            "comprovantes/" + nomeArquivo;
+        const caminhoArquivo = nomeArquivo;
 
         // Enviar comprovante para o Storage
         status.textContent = "Enviando comprovante...";
