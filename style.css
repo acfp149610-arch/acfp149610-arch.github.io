@@ -26,53 +26,88 @@ body {
 
 header {
     width: 100%;
-    min-height: 85px;
-    padding: 20px 7%;
+    min-height: 82px;
+    padding: 0 7%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #111;
-    border-bottom: 1px solid #292929;
+    background: #101010;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 }
 
 header h2 {
+    color: #ffffff;
     font-size: 19px;
     font-weight: 900;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
 }
 
 nav {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 32px;
 }
 
 nav a {
+    color: #eeeeee;
     text-decoration: none;
-    color: #ddd;
     font-size: 12px;
     font-weight: 700;
-    transition: .3s;
+    letter-spacing: .7px;
+    transition: color .3s ease;
 }
 
 nav a:hover {
-    color: var(--vermelho);
+    color: #c82032;
 }
 
 nav a:last-child {
-    background: var(--vermelho);
-    color: white;
-    padding: 13px 20px;
-    border-radius: 7px;
+    background: #c82032;
+    color: #ffffff;
+    padding: 13px 21px;
+    border-radius: 5px;
+    transition: .3s ease;
 }
 
 nav a:last-child:hover {
-    background: var(--vermelho-escuro);
+    background: #941323;
+    transform: translateY(-2px);
 }
 
+/* CABEÇALHO NO CELULAR */
+
+@media (max-width: 750px) {
+
+    header {
+        padding: 20px 15px;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    header h2 {
+        font-size: 17px;
+        text-align: center;
+    }
+
+    nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 17px;
+    }
+
+    nav a {
+        font-size: 10px;
+    }
+
+    nav a:last-child {
+        padding: 10px 13px;
+    }
+}
 /* INÍCIO */
 
 #inicio {
