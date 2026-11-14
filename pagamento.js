@@ -1,84 +1,118 @@
-// =====================================
-// CONEXÃO COM SUPABASE
-// =====================================
+import { createClient } from
+"https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL = "https://kghzycpuvlidoenqnhhb.supabase.co";
+// SUPABASE
+const SUPABASE_URL =
+"https://kghzycpuvlidoenqnhhb.supabase.co";
 
-const SUPABASE_KEY = "sb_publishable_IntMzNdV-nhtxW8czMBijA_4yVRgbIp";
+const SUPABASE_KEY =
+"sb_publishable_IntMzNdV-nhtxW8czMBijA_4yVRgbIp";
 
-let supabase;
+const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
-// =====================================
-// CONFIGURAÇÕES DO PIX
-// =====================================
-
+// PIX
 const CHAVE_PIX = "03016158299";
 const NOME_RECEBEDOR = "ANA CLARA FREITAS PAULINO";
 const CIDADE = "MONTES CLAROS";
 
-// =====================================
-// DADOS DO CLIENTE
-// =====================================
-
-const cliente = JSON.parse(
-    localStorage.getItem("dadosCliente")
-);
-
-if (!cliente) {
-    alert("Cadastro não encontrado!");
-    window.location.href = "index.html";
-}
-
-// =====================================
-// VALORES DOS CURSOS
-// =====================================
-
+// CURSOS
 const valores = {
     "Curso 1": 1.00,
     "Curso 2": 1.00
 };
 
-const valor = valores[cliente.curso];
+let cliente;
+let valor;
+let codigo;
 
-if (!valor) {
-    alert("Curso inválido!");
-    window.location.href = "index.html";
+// INICIALIZAÇÃO
+async function iniciar() {
+
+    const { data, error } =
+        await supabase.auth.getSession();
+
+    if (error) throw error;
+
+    if (!data.session) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const usuario = data.session.user;
+
+    cliente = JSON.parse(
+        localStorage.getItem("dadosCliente") || "null"
+    );
+
+    if (!cliente) {
+        alert("Cadastro não encontrado!");
+        window.location.href = "index.html";
+        return;
+    }
+
+    if (cliente.usuario_id !== usuario.id) {
+        alert("Esta contratação não pertence à sua conta.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    valor = valores[cliente.curso];
+
+    if (valor === undefined) {
+        alert("Curso inválido!");
+        window.location.href = "index.html";
+        return;
+    }
+
+    document.getElementById("nome").textContent =
+        "Aluno: " + cliente.nome;
+
+    document.getElementById("curso").textContent =
+        "Curso: " + cliente.curso;
+
+    document.getElementById("valor").textContent =
+        "R$ " + valor.toFixed(2).replace(".", ",");
+
+    codigo = gerarPix();
+
+    document.getElementById("codigoPix").value = codigo;
+
+    new QRCode(document.getElementById("qrcode"), {
+        text: codigo,
+        width: 220,
+        height: 220
+    });
+
+    document.getElementById("copiar").addEventListener(
+        "click",
+        copiarPix
+    );
+
+    document.getElementById("finalizar").addEventListener(
+        "click",
+        enviarCadastro
+    );
 }
 
-// =====================================
-// MOSTRAR RESUMO
-// =====================================
-
-document.getElementById("nome").textContent =
-    "Aluno: " + cliente.nome;
-
-document.getElementById("curso").textContent =
-    "Curso: " + cliente.curso;
-
-document.getElementById("valor").textContent =
-    "R$ " + valor.toFixed(2).replace(".", ",");
-
-// =====================================
 // CAMPOS PIX
-// =====================================
-
 function campo(id, valor) {
-    return id +
-        String(valor.length).padStart(2, "0") +
-        valor;
+    return id + String(valor.length).padStart(2, "0") + valor;
 }
 
-// =====================================
 // CRC16
-// =====================================
-
 function calcularCRC(texto) {
+
     let crc = 0xFFFF;
 
     for (let i = 0; i < texto.length; i++) {
+
         crc ^= texto.charCodeAt(i) << 8;
 
         for (let j = 0; j < 8; j++) {
+
             if (crc & 0x8000) {
                 crc = (crc << 1) ^ 0x1021;
             } else {
@@ -89,16 +123,12 @@ function calcularCRC(texto) {
         }
     }
 
-    return crc.toString(16)
-        .toUpperCase()
-        .padStart(4, "0");
+    return crc.toString(16).toUpperCase().padStart(4, "0");
 }
 
-// =====================================
 // GERAR PIX
-// =====================================
-
 function gerarPix() {
+
     const chave = campo("01", CHAVE_PIX);
 
     const merchantAccount =
@@ -106,11 +136,9 @@ function gerarPix() {
 
     const merchant = campo("26", merchantAccount);
 
-    const identificador = "ZV" + Date.now();
-
     const adicional = campo(
         "62",
-        campo("05", identificador)
+        campo("05", "ZV" + Date.now())
     );
 
     let pix =
@@ -126,66 +154,29 @@ function gerarPix() {
         adicional +
         "6304";
 
-    pix += calcularCRC(pix);
-
-    return pix;
+    return pix + calcularCRC(pix);
 }
 
-const codigo = gerarPix();
-
-document.getElementById("codigoPix").value = codigo;
-
-// =====================================
-// QR CODE
-// =====================================
-
-new QRCode(document.getElementById("qrcode"), {
-    text: codigo,
-    width: 220,
-    height: 220
-});
-
-// =====================================
 // COPIAR PIX
-// =====================================
+async function copiarPix() {
 
-document.getElementById("copiar").addEventListener(
-    "click",
-    async () => {
-        try {
-            await navigator.clipboard.writeText(codigo);
+    try {
 
-            document.getElementById("mensagem").textContent =
-                "Código PIX copiado!";
-        } catch (erro) {
-            document.getElementById("mensagem").textContent =
-                "Não foi possível copiar. Selecione o código manualmente.";
-        }
+        await navigator.clipboard.writeText(codigo);
+
+        document.getElementById("mensagem").textContent =
+            "Código PIX copiado!";
+
+    } catch (erro) {
+
+        document.getElementById("mensagem").textContent =
+            "Selecione o código PIX manualmente.";
     }
-);
-
-// =====================================
-// CONECTAR AO SUPABASE
-// =====================================
-
-async function conectarSupabase() {
-    const { createClient } = await import(
-        "https://esm.sh/@supabase/supabase-js@2"
-    );
-
-    supabase = createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-    return supabase;
 }
 
-// =====================================
 // ENVIAR CONTRATAÇÃO
-// =====================================
-
 async function enviarCadastro() {
+
     const botao = document.getElementById("finalizar");
     const status = document.getElementById("statusEnvio");
     const campoComprovante = document.getElementById("comprovante");
@@ -198,31 +189,37 @@ async function enviarCadastro() {
     }
 
     if (arquivo.size > 5 * 1024 * 1024) {
-        status.textContent =
-            "O comprovante deve ter no máximo 5 MB.";
+        status.textContent = "O comprovante deve ter no máximo 5 MB.";
         return;
     }
 
     botao.disabled = true;
     botao.textContent = "ENVIANDO...";
-    status.textContent = "Conectando ao sistema...";
+
+    let caminhoArquivo = null;
 
     try {
-        await conectarSupabase();
 
-        // Nome único para o comprovante
+        const { data: sessao, error: erroSessao } =
+            await supabase.auth.getSession();
+
+        if (erroSessao) throw erroSessao;
+
+        if (!sessao.session ||
+            sessao.session.user.id !== cliente.usuario_id) {
+            throw new Error("Faça login novamente para continuar.");
+        }
+
+        const usuario = sessao.session.user;
+
+        status.textContent = "Enviando comprovante...";
+
         const extensao = arquivo.name.includes(".")
             ? arquivo.name.split(".").pop().toLowerCase()
             : "bin";
 
-        const nomeArquivo =
-            crypto.randomUUID() + "." + extensao;
-
-        const caminhoArquivo =
-            "comprovantes/" + nomeArquivo;
-
-        // Enviar comprovante para o Storage
-        status.textContent = "Enviando comprovante...";
+        caminhoArquivo =
+            usuario.id + "/" + crypto.randomUUID() + "." + extensao;
 
         const { error: erroUpload } =
             await supabase.storage
@@ -232,21 +229,19 @@ async function enviarCadastro() {
                     upsert: false
                 });
 
-        if (erroUpload) {
-            throw erroUpload;
-        }
+        if (erroUpload) throw erroUpload;
 
-        // Salvar dados na tabela
-        status.textContent = "Salvando seus dados...";
+        status.textContent = "Salvando contratação...";
 
         const dados = {
             nome: cliente.nome,
-            email: cliente.email,
+            email: usuario.email,
             telefone: cliente.telefone,
             cpf: cliente.cpf,
             curso: cliente.curso,
             valor: valor.toFixed(2),
             comprovante: caminhoArquivo,
+            usuario_id: usuario.id,
             status: "Pendente"
         };
 
@@ -255,39 +250,34 @@ async function enviarCadastro() {
                 .from("contratacoes")
                 .insert([dados]);
 
-        if (erroCadastro) {
-            // Tenta excluir o comprovante caso o cadastro falhe
-            await supabase.storage
-                .from("comprovantes")
-                .remove([caminhoArquivo]);
-
-            throw erroCadastro;
-        }
+        if (erroCadastro) throw erroCadastro;
 
         status.textContent =
-            "✓ Contratação enviada com sucesso! Seus dados e comprovante foram encaminhados para análise. Aguarde a confirmação.";
+            "✓ Contratação enviada! Aguarde a confirmação do pagamento.";
 
         botao.textContent = "CONTRATAÇÃO ENVIADA";
 
         localStorage.removeItem("dadosCliente");
 
     } catch (erro) {
-        console.error("Erro no Supabase:", erro);
+
+        console.error("Erro:", erro);
+
+        if (caminhoArquivo) {
+            await supabase.storage
+                .from("comprovantes")
+                .remove([caminhoArquivo]);
+        }
 
         status.textContent =
-            "Não foi possível enviar: " +
-            (erro.message || "Erro desconhecido.");
+            "Erro ao enviar: " + erro.message;
 
         botao.disabled = false;
         botao.textContent = "FINALIZAR CONTRATAÇÃO";
     }
 }
 
-// =====================================
-// BOTÃO FINALIZAR
-// =====================================
-
-document.getElementById("finalizar").addEventListener(
-    "click",
-    enviarCadastro
-);
+iniciar().catch(error => {
+    console.error(error);
+    alert("Não foi possível carregar o pagamento: " + error.message);
+});
